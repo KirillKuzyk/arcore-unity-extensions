@@ -65,6 +65,12 @@ namespace Google.XR.ARCoreExtensions
         {
             get
             {
+                #if UNITY_EDITOR
+                if (Application.isEditor) {
+                    return ARCoreCloudAnchorsEditorDelegate.Instance.GetCloudAnchorState(ARCoreExtensions._instance.currentARCoreSessionHandle, _anchorHandle);
+                }
+                #endif
+                
                 return AnchorApi.GetCloudAnchorState(
                     ARCoreExtensions._instance.currentARCoreSessionHandle,
                     _anchorHandle).ToCloudAnchorState();
@@ -100,6 +106,12 @@ namespace Google.XR.ARCoreExtensions
         {
             get
             {
+                #if UNITY_EDITOR
+                if (Application.isEditor) {
+                    return ARCoreCloudAnchorsEditorDelegate.Instance.GetTrackingState(ARCoreExtensions._instance.currentARCoreSessionHandle, _anchorHandle);
+                }
+                #endif
+                
                 return AnchorApi.GetTrackingState(
                     ARCoreExtensions._instance.currentARCoreSessionHandle,
                     _anchorHandle).ToTrackingState();
@@ -122,11 +134,18 @@ namespace Google.XR.ARCoreExtensions
         /// </summary>
         public void Update()
         {
-            // Get the current Pose.
-            ApiPose apiPose = AnchorApi.GetAnchorPose(
-                ARCoreExtensions._instance.currentARCoreSessionHandle,
-                _anchorHandle);
-            _pose = apiPose.ToUnityPose();
+            #if UNITY_EDITOR
+            _pose = ARCoreCloudAnchorsEditorDelegate.Instance.GetAnchorPose(ARCoreExtensions._instance.currentARCoreSessionHandle, _anchorHandle);
+            #endif
+
+            if (!Application.isEditor) 
+            {
+                // Get the current Pose.
+                ApiPose apiPose = AnchorApi.GetAnchorPose(
+                    ARCoreExtensions._instance.currentARCoreSessionHandle,
+                    _anchorHandle);
+                _pose = apiPose.ToUnityPose();
+            }
 
             // Update the Cloud Anchor transform to match.
             transform.localPosition = _pose.position;
@@ -142,6 +161,17 @@ namespace Google.XR.ARCoreExtensions
         {
             if (_anchorHandle != IntPtr.Zero)
             {
+                #if UNITY_EDITOR
+                if (Application.isEditor) {
+                    return;
+                }
+                #endif
+
+                if (ARCoreExtensions._instance == null || ARCoreExtensions._instance.Session == null) {
+                    Debug.LogError("Bug in ARCore Extensions: ARCoreExtensions._instance was destroyed before ARCloudAnchor.OnDestroy()");
+                    return;
+                }
+                
                 AnchorApi.Detach(
                     ARCoreExtensions._instance.currentARCoreSessionHandle,
                     _anchorHandle);

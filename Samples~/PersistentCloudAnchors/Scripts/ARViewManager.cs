@@ -284,6 +284,11 @@ namespace Google.XR.ARCoreExtensions.Samples.PersistentCloudAnchors
             {
                 foreach (var anchor in _cachedCloudAnchors)
                 {
+                    if (anchor == null) {
+                        Debug.LogError("Bug in ARCore: anchors may be null if the app is quitting.");
+                        continue;
+                    }
+                    
                     Destroy(anchor.gameObject);
                 }
 
@@ -630,6 +635,11 @@ namespace Google.XR.ARCoreExtensions.Samples.PersistentCloudAnchors
         {
             foreach (var plane in Controller.PlaneManager.trackables)
             {
+                if (plane == null) {
+                    Debug.LogError("Bug in ARCore extensions: plane can destroyed if application is quitting");
+                    continue;
+                }
+                
                 plane.gameObject.SetActive(visible);
             }
         }

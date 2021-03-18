@@ -137,6 +137,10 @@ namespace Google.XR.ARCoreExtensions
         /// </summary>
         public void Awake()
         {
+            #if UNITY_EDITOR
+            UnityEngine.Assertions.Assert.IsNotNull(ARCoreCloudAnchorsEditorDelegate.Instance);
+            #endif
+            
             if (_instance)
             {
                 Debug.LogError("ARCore Extensions is already initialized. You may only " +
@@ -166,34 +170,37 @@ namespace Google.XR.ARCoreExtensions
             IOSSupportManager.Instance.SetEnabled(true);
 #endif // UNITY_IOS && ARCORE_EXTENSIONS_IOS_SUPPORT
 #if UNITY_ANDROID
-            if (_instance.Session == null)
+            if (!Application.isEditor) 
             {
-                Debug.LogError("ARSession is required by ARCoreExtensions!");
-                return;
-            }
+                if (_instance.Session == null)
+                {
+                    Debug.LogError("ARSession is required by ARCoreExtensions!");
+                    return;
+                }
 
-            _arCoreSubsystem = (ARCoreSessionSubsystem)Session.subsystem;
-            if (_arCoreSubsystem == null)
-            {
-                Debug.LogError(
-                    "No active ARCoreSessionSubsystem is available in this session, Please " +
-                    "ensure that a valid loader configuration exists in the XR project settings.");
-            }
-            else
-            {
-                _arCoreSubsystem.beforeSetConfiguration += BeforeConfigurationChanged;
-            }
+                _arCoreSubsystem = (ARCoreSessionSubsystem)Session.subsystem;
+                if (_arCoreSubsystem == null)
+                {
+                    Debug.LogError(
+                        "No active ARCoreSessionSubsystem is available in this session, Please " +
+                        "ensure that a valid loader configuration exists in the XR project settings.");
+                }
+                else
+                {
+                    _arCoreSubsystem.beforeSetConfiguration += BeforeConfigurationChanged;
+                }
 
-            _arCoreCameraSubsystem = (ARCoreCameraSubsystem)CameraManager.subsystem;
-            if (_arCoreCameraSubsystem == null)
-            {
-                Debug.LogError(
-                    "No active ARCoreCameraSubsystem is available in this session, Please " +
-                    "ensure that a valid loader configuration exists in the XR project settings.");
-            }
-            else
-            {
-                _arCoreCameraSubsystem.beforeGetCameraConfiguration += BeforeGetCameraConfiguration;
+                _arCoreCameraSubsystem = (ARCoreCameraSubsystem)CameraManager.subsystem;
+                if (_arCoreCameraSubsystem == null)
+                {
+                    Debug.LogError(
+                        "No active ARCoreCameraSubsystem is available in this session, Please " +
+                        "ensure that a valid loader configuration exists in the XR project settings.");
+                }
+                else
+                {
+                    _arCoreCameraSubsystem.beforeGetCameraConfiguration += BeforeGetCameraConfiguration;
+                }
             }
 #endif // UNITY_ANDROID
 
@@ -278,7 +285,10 @@ namespace Google.XR.ARCoreExtensions
                     return;
                 }
 
-                _arCoreSubsystem.SetConfigurationDirty();
+                if (!Application.isEditor) 
+                {
+                    _arCoreSubsystem.SetConfigurationDirty();
+                }
             }
 #endif
         }

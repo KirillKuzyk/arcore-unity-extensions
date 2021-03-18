@@ -1,28 +1,28 @@
 {
-    "name": "com.google.ar.core.arfoundation.extensions",
-    "displayName": "ARCore Extensions",
-    "version": "1.23.0",
-    "unity": "2019.4",
-    "description": "Google ARCore Extensions for AR Foundation. This package provides access to ARCore features not covered by AR Foundation's cross platform API.",
-    "author":
+  "name": "com.kyrylokuzyk.arfoundationremote.arcoreextensions",
+  "displayName": "ARCore Extensions + AR Foundation Remote",
+  "version": "1.23.0",
+  "unity": "2019.4",
+  "description": "Google ARCore Extensions for AR Foundation with AR Foundation Editor Remote support (Cloud Anchors API only):\nhttps://assetstore.unity.com/packages/tools/utilities/ar-foundation-editor-remote-168773",
+  "author":
+  {
+    "name": "Google LLC"
+  },
+  "dependencies":
+  {
+    "com.unity.xr.arfoundation": "4.1.0-preview.10",
+    "com.unity.xr.arcore": "4.1.0-preview.10"
+  },
+  "samples": [
     {
-        "name": "Google LLC"
+      "displayName": "Cloud Anchor Sample",
+      "description": "The Cloud Anchor Sample using ARCore Extensions",
+      "path": "Samples~/CloudAnchors"
     },
-    "dependencies":
     {
-        "com.unity.xr.arfoundation": "4.1.0-preview.10",
-        "com.unity.xr.arcore": "4.1.0-preview.10"
-    },
-    "samples": [
-        {
-            "displayName": "Cloud Anchor Sample",
-            "description": "The Cloud Anchor Sample using ARCore Extensions",
-            "path": "Samples~/CloudAnchors"
-        },
-        {
-            "displayName": "Persistent Cloud Anchor Sample",
-            "description": "The Persistent Cloud Anchor Sample using ARCore Extensions",
-            "path": "Samples~/PersistentCloudAnchors"
-        }
-    ]
+      "displayName": "Persistent Cloud Anchor Sample",
+      "description": "The Persistent Cloud Anchor Sample using ARCore Extensions",
+      "path": "Samples~/PersistentCloudAnchors"
+    }
+  ]
 }

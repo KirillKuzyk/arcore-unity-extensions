@@ -30,6 +30,12 @@ namespace Google.XR.ARCoreExtensions.Internal
             IntPtr sessionHandle,
             IntPtr anchorHandle)
         {
+            #if UNITY_EDITOR
+            if (UnityEngine.Application.isEditor) {
+                return ARCoreCloudAnchorsEditorDelegate.Instance.GetCloudAnchorId(sessionHandle, anchorHandle);
+            }
+            #endif
+            
             IntPtr stringHandle = IntPtr.Zero;
             ExternApi.ArAnchor_acquireCloudAnchorId(
                 sessionHandle, anchorHandle, ref stringHandle);

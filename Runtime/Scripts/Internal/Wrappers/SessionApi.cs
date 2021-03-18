@@ -57,6 +57,12 @@ namespace Google.XR.ARCoreExtensions.Internal
             IntPtr sessionHandle,
             IntPtr anchorHandle)
         {
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                return ARCoreCloudAnchorsEditorDelegate.Instance.HostCloudAnchor(sessionHandle, anchorHandle, null);
+            }
+            #endif
+            
             IntPtr cloudAnchorHandle = IntPtr.Zero;
             ApiArStatus status = ExternApi.ArSession_hostAndAcquireNewCloudAnchor(
                 sessionHandle,
@@ -75,6 +81,12 @@ namespace Google.XR.ARCoreExtensions.Internal
             IntPtr anchorHandle,
             int ttlDays)
         {
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                return ARCoreCloudAnchorsEditorDelegate.Instance.HostCloudAnchor(sessionHandle, anchorHandle, ttlDays);
+            }
+            #endif
+
             IntPtr cloudAnchorHandle = IntPtr.Zero;
             ApiArStatus status = ExternApi.ArSession_hostAndAcquireNewCloudAnchorWithTtl(
                 sessionHandle, anchorHandle, ttlDays, ref cloudAnchorHandle);
@@ -89,6 +101,13 @@ namespace Google.XR.ARCoreExtensions.Internal
 
         public static void SetAuthToken(IntPtr sessionHandle, string authToken)
         {
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                ARCoreCloudAnchorsEditorDelegate.Instance.SetAuthToken(sessionHandle, authToken);
+                return;
+            }
+            #endif
+            
             ExternApi.ArSession_setAuthToken(sessionHandle, authToken);
         }
 
@@ -96,6 +115,12 @@ namespace Google.XR.ARCoreExtensions.Internal
             IntPtr sessionHandle,
             string cloudAnchorId)
         {
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                return ARCoreCloudAnchorsEditorDelegate.Instance.ResolveCloudAnchor(sessionHandle, cloudAnchorId);
+            }
+            #endif
+            
             IntPtr cloudAnchorHandle = IntPtr.Zero;
             ApiArStatus status = ExternApi.ArSession_resolveAndAcquireNewCloudAnchor(
                 sessionHandle,
@@ -112,6 +137,12 @@ namespace Google.XR.ARCoreExtensions.Internal
         public static FeatureMapQuality EstimateFeatureMapQualityForHosting(
             IntPtr sessionHandle, Pose pose)
         {
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                return ARCoreCloudAnchorsEditorDelegate.Instance.EstimateFeatureMapQualityForHosting(sessionHandle, pose);
+            }
+            #endif
+            
             IntPtr poseHandle = PoseApi.Create(sessionHandle, pose);
             int featureMapQuality = (int)FeatureMapQuality.Insufficient;
             var status = ExternApi.ArSession_estimateFeatureMapQualityForHosting(
