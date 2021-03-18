@@ -2,7 +2,7 @@ Google ARCore Extensions for AR Foundation
 ==========================================
 This package adapts the [ARCore Extensions for AR Foundation](//github.com/google-ar/arcore-unity-extensions) Cloud Anchors to work with the [AR Foundation Editor Remote](//assetstore.unity.com/packages/tools/utilities/ar-foundation-editor-remote-168773) plugin.
 
-With the help of AR Foundation Editor Remote plugin and this repo you can test and debug Google Cloud Anchors right inside the Unity Editor.
+Test and debug Google Cloud Anchors right inside the Unity Editor!
 
 
 ## Quick Start
