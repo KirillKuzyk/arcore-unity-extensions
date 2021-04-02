@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.XR.ARSubsystems;
@@ -34,7 +35,7 @@ namespace Google.XR.ARCoreExtensions {
             }
         }
 
-        public static void SetDelegate(IARCoreCloudAnchors del) {
+        public static void SetDelegate([NotNull] IARCoreCloudAnchors del) {
             Assert.IsNull(_instance);
             _instance = del;
         }
