@@ -274,6 +274,11 @@ namespace Google.XR.ARCoreExtensions.Samples.PersistentCloudAnchors
             {
                 foreach (var anchor in _pendingCloudAnchors)
                 {
+                    if (anchor == null) {
+                        Debug.LogError("Bug in ARCore: anchors may be null if the app is quitting.");
+                        continue;
+                    }
+
                     Destroy(anchor.gameObject);
                 }
 
