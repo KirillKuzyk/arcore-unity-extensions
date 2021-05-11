@@ -3,7 +3,7 @@ Run and debug Google Cloud Anchors API in the Unity Editor
 
 ## Warning
 
-The official version of the AR Foundation Editor Remote that supports Google Cloud Anchors is not released yet. Please contact me to receive a preview version.
+The official version of the AR Foundation Editor Remote that supports Google Cloud Anchors is not released yet. Please send me your Asset Store Invoice Number to receive a preview version.
 
 
 ## Description
