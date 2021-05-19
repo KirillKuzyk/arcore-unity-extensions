@@ -279,6 +279,19 @@ namespace Google.XR.ARCoreExtensions
                 _cachedConfig = ScriptableObject.CreateInstance<ARCoreExtensionsConfig>();
                 _cachedConfig.CopyFrom(ARCoreExtensionsConfig);
 
+                List<IDependentModule> modules = DependentModulesManager.GetModules();
+                foreach (var module in modules)
+                {
+                    string[] permissions = module.GetRuntimePermissions(_cachedConfig);
+                    foreach (var permission in permissions)
+                    {
+                        if (!AndroidPermissionsManager.IsPermissionGranted(permission))
+                        {
+                            _requiredPermissionNames.Add(permission);
+                        }
+                    }
+                }
+
                 if (_requiredPermissionNames.Count > 0)
                 {
                     RequestPermission();
@@ -305,7 +318,7 @@ namespace Google.XR.ARCoreExtensions
         {
             // Waiting for current request.
             if (!AndroidPermissionsManager.IsPermissionGranted(
-                AndroidPermissionsManager._cameraPermission) ||
+                    AndroidPermissionsManager._cameraPermission) ||
                 !string.IsNullOrEmpty(_currentPermissionRequest))
             {
                 return;
