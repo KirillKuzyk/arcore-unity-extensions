@@ -96,6 +96,9 @@ namespace Google.XR.ARCoreExtensions
         public void CopyFrom(ARCoreExtensionsConfig otherConfig)
         {
             CloudAnchorMode = otherConfig.CloudAnchorMode;
+            #if UNITY_EDITOR
+            ARCoreCloudAnchorsEditorDelegate.Instance.OnConfigurationChange();
+            #endif
         }
     }
 }

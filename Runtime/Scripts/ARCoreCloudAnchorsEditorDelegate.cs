@@ -16,6 +16,7 @@ namespace Google.XR.ARCoreExtensions {
         FeatureMapQuality EstimateFeatureMapQualityForHosting(IntPtr sessionHandle, Pose pose);
         void SetAuthToken(IntPtr sessionHandle, string authToken);
         IntPtr ResolveCloudAnchor(IntPtr sessionHandle, string cloudAnchorId);
+        void OnConfigurationChange();
     }
 
     public static class ARCoreCloudAnchorsEditorDelegate {
