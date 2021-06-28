@@ -29,7 +29,7 @@ namespace Google.XR.ARCoreExtensions {
             get {
                 if (_instance == null) {
                     throw new Exception("To test the ARCore Cloud Anchors API in Editor, please install the AR Foundation Editor Remote plugin version 4.12.0 or newer:\n" +
-                                   "https://assetstore.unity.com/packages/tools/utilities/ar-foundation-editor-remote-168773"); // todo update link
+                                   "https://assetstore.unity.com/packages/tools/utilities/ar-foundation-editor-remote-168773");
                 }
 
                 return _instance;
