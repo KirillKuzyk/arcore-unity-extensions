@@ -28,7 +28,7 @@ namespace Google.XR.ARCoreExtensions {
         public static IARCoreCloudAnchors Instance {
             get {
                 if (_instance == null) {
-                    throw new Exception("To test the ARCore Cloud Anchors API in Editor, please install the AR Foundation Editor Remote 2.0 or newer:\n" +
+                    throw new Exception("To test the ARCore Cloud Anchors API in Editor, please install the AR Foundation Remote 2.0 or newer:\n" +
                                    "https://assetstore.unity.com/packages/slug/201106");
                 }
 
