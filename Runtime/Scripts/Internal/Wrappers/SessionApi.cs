@@ -197,6 +197,16 @@ namespace Google.XR.ARCoreExtensions.Internal
             return status.ToPlaybackResult();
         }
 
+        public static PlaybackResult SetPlaybackDatasetUri(
+            IntPtr sessionHandle, string datasetUri)
+        {
+            ApiArStatus status = ApiArStatus.ErrorFatal;
+#if UNITY_ANDROID
+            status = ExternApi.ArSession_setPlaybackDatasetUri(sessionHandle, datasetUri);
+#endif
+            return status.ToPlaybackResult();
+        }
+
         private struct ExternApi
         {
             [DllImport(ApiConstants.ARCoreNativeApi)]
@@ -285,6 +295,10 @@ namespace Google.XR.ARCoreExtensions.Internal
             [AndroidImport(ApiConstants.ARCoreNativeApi)]
             public static extern ApiArStatus ArSession_setPlaybackDataset(
                 IntPtr sessionHandle, string datasetFilepath);
+
+            [AndroidImport(ApiConstants.ARCoreNativeApi)]
+            public static extern ApiArStatus ArSession_setPlaybackDatasetUri(
+                IntPtr sessionHandle, string encodedDatasetUri);
 #endif // UNITY_ANDROID
         }
     }
