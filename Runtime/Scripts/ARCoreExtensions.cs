@@ -161,6 +161,10 @@ namespace Google.XR.ARCoreExtensions
         /// </summary>
         public void Awake()
         {
+            #if UNITY_EDITOR
+            UnityEngine.Assertions.Assert.IsNotNull(ARCoreCloudAnchorsEditorDelegate.Instance);
+            #endif
+
             if (_instance)
             {
                 Debug.LogError("ARCore Extensions is already initialized. You may only " +
@@ -192,6 +196,12 @@ namespace Google.XR.ARCoreExtensions
 #if UNITY_IOS && ARCORE_EXTENSIONS_IOS_SUPPORT
             IOSSupportManager.Instance.SetEnabled(true);
 #endif // UNITY_IOS && ARCORE_EXTENSIONS_IOS_SUPPORT
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                CachedData.Reset();
+                return;
+            }
+            #endif
 #if UNITY_ANDROID
             if (_instance.Session == null)
             {
@@ -337,7 +347,10 @@ namespace Google.XR.ARCoreExtensions
                     return;
                 }
 
-                _arCoreSubsystem.SetConfigurationDirty();
+                if (!Application.isEditor)
+                {
+                    _arCoreSubsystem.SetConfigurationDirty();
+                }
             }
 #endif
         }

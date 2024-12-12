@@ -89,6 +89,12 @@ namespace Google.XR.ARCoreExtensions
         {
             get
             {
+                #if UNITY_EDITOR
+                if (Application.isEditor) {
+                    return ARCoreCloudAnchorsEditorDelegate.Instance.GetCloudAnchorState(ARCoreExtensions._instance.currentARCoreSessionHandle, _anchorHandle);
+                }
+                #endif
+                
                 if (ARCoreExtensions._instance.currentARCoreSessionHandle == IntPtr.Zero ||
                     _anchorHandle == IntPtr.Zero)
                 {
@@ -182,6 +188,14 @@ namespace Google.XR.ARCoreExtensions
         /// </summary>
         public void OnDestroy()
         {
+            #if DEVELOPMENT_BUILD || UNITY_EDITOR
+            if (ARCoreExtensions._instance == null) {
+                Debug.LogError("Bug in ARCore Extensions: ARCoreExtensions._instance was destroyed in\n" +
+                               "ARCoreExtensions.OnDestroy() before ARCloudAnchor.OnDestroy().\n" +
+                               "Please fix this bug, or the next 'ARCoreExtensions._instance.currentARCoreSessionHandle'\n" +
+                               "expression will throw NullReferenceException.");
+            }
+            #endif
             if (ARCoreExtensions._instance.currentARCoreSessionHandle != IntPtr.Zero &&
                 _anchorHandle != IntPtr.Zero)
             {
