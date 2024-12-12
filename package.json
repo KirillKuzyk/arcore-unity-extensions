@@ -1,9 +1,9 @@
 {
-    "name": "com.google.ar.core.arfoundation.extensions",
-    "displayName": "ARCore Extensions",
+  "name": "com.kyrylokuzyk.arfoundationremote.arcoreextensions",
+  "displayName": "ARCore Extensions + AR Foundation Remote",
     "version": "1.47.0",
     "unity": "2019.4",
-    "description": "Google ARCore Extensions for AR Foundation. This package provides access to ARCore features not covered by AR Foundation's cross platform API.",
+  "description": "Google ARCore Extensions for AR Foundation with AR Foundation Remote 2.0 support (Cloud Anchors API only):\nhttps://assetstore.unity.com/packages/slug/201106",
     "author":
     {
         "name": "Google LLC"

@@ -32,11 +32,23 @@ namespace Google.XR.ARCoreExtensions.Internal
     {
         public static void SetSessionRequired(bool required)
         {
+            #if UNITY_EDITOR
+            if (UnityEngine.Application.isEditor) {
+                return;
+            }
+            #endif
+            
             ExternApi.ArPresto_setSessionRequired(required);
         }
 
         public static IntPtr GetSessionHandle()
         {
+            #if UNITY_EDITOR
+            if (UnityEngine.Application.isEditor) {
+                return ARCoreCloudAnchorsEditorDelegate.dummySessionPtr;
+            }
+            #endif
+            
             IntPtr sessionHandle = IntPtr.Zero;
             ExternApi.ArPresto_getSession(ref sessionHandle);
             return sessionHandle;

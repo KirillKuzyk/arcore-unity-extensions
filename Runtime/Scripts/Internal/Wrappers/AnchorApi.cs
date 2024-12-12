@@ -45,6 +45,12 @@ namespace Google.XR.ARCoreExtensions.Internal
             IntPtr sessionHandle,
             IntPtr anchorHandle)
         {
+			#if UNITY_EDITOR
+            if (UnityEngine.Application.isEditor) {
+                return ARCoreCloudAnchorsEditorDelegate.Instance.GetCloudAnchorId(sessionHandle, anchorHandle);
+            }
+            #endif
+			
 #if !UNITY_IOS || CLOUDANCHOR_IOS_SUPPORT
             IntPtr stringHandle = IntPtr.Zero;
             ExternApi.ArAnchor_acquireCloudAnchorId(
@@ -77,6 +83,23 @@ namespace Google.XR.ARCoreExtensions.Internal
             IntPtr sessionHandle,
             IntPtr anchorHandle)
         {
+            #if UNITY_EDITOR
+            if (UnityEngine.Application.isEditor) {
+                var pose = ARCoreCloudAnchorsEditorDelegate.Instance.GetAnchorPose(ARCoreExtensions._instance.currentARCoreSessionHandle, anchorHandle);
+                var pos = pose.position;
+                var rot = pose.rotation;
+                return new ApiPose {
+                    X = pos.x,
+                    Y = pos.y,
+                    Z = pos.z,
+                    Qx = rot.x,
+                    Qy = rot.y,
+                    Qz = rot.z,
+                    Qw = rot.w
+                };
+            }
+            #endif
+            
             IntPtr poseHandle = PoseApi.Create(sessionHandle);
             ExternApi.ArAnchor_getPose(sessionHandle, anchorHandle, poseHandle);
             ApiPose apiPose = PoseApi.ExtractPoseValue(sessionHandle, poseHandle);
@@ -88,6 +111,12 @@ namespace Google.XR.ARCoreExtensions.Internal
             IntPtr sessionHandle,
             IntPtr anchorHandle)
         {
+            #if UNITY_EDITOR
+            if (UnityEngine.Application.isEditor) {
+                return ARCoreCloudAnchorsEditorDelegate.Instance.GetTrackingState(ARCoreExtensions._instance.currentARCoreSessionHandle, anchorHandle);
+            }
+            #endif
+            
             ApiTrackingState apiTrackingState = ApiTrackingState.Stopped;
             ExternApi.ArAnchor_getTrackingState(sessionHandle, anchorHandle, ref apiTrackingState);
             return apiTrackingState;
@@ -111,12 +140,25 @@ namespace Google.XR.ARCoreExtensions.Internal
             IntPtr sessionHandle,
             IntPtr anchorHandle)
         {
+            #if UNITY_EDITOR
+            if (UnityEngine.Application.isEditor) {
+                return;
+            }
+            #endif
+            
             ExternApi.ArAnchor_detach(sessionHandle, anchorHandle);
         }
 
         public static void Release(
             IntPtr anchorHandle)
         {
+            #if UNITY_EDITOR
+            if (UnityEngine.Application.isEditor) {
+                SessionApi.removeEditorHandle(anchorHandle);
+                return;
+            }
+            #endif
+            
             ExternApi.ArAnchor_release(anchorHandle);
         }
 
