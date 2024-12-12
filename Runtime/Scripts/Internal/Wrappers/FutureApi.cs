@@ -55,6 +55,17 @@ namespace Google.XR.ARCoreExtensions.Internal
 
         public static PromiseState GetState(IntPtr sessionHandle, IntPtr futureHandle)
         {
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                var anchorState = ARCoreCloudAnchorsEditorDelegate.Instance.GetCloudAnchorState(sessionHandle, futureHandle);
+                return anchorState ==
+                    #pragma warning disable CS0618
+                    CloudAnchorState.TaskInProgress
+                    #pragma warning restore CS0618
+                    ? PromiseState.Pending : PromiseState.Done;
+            }
+            #endif
+            
             var state = PromiseState.Pending;
             ExternApi.ArFuture_getState(sessionHandle, futureHandle, ref state);
             return state;
@@ -115,6 +126,12 @@ namespace Google.XR.ARCoreExtensions.Internal
         public static CloudAnchorState GetResolveCloudAnchorState(IntPtr sessionHandle,
             IntPtr futureHandle)
         {
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                return ARCoreCloudAnchorsEditorDelegate.Instance.GetCloudAnchorState(sessionHandle, futureHandle);
+            }
+            #endif
+            
             ApiCloudAnchorState outApiCloudAnchorState = ApiCloudAnchorState.None;
 #if !UNITY_IOS || CLOUDANCHOR_IOS_SUPPORT
             ExternApi.ArResolveCloudAnchorFuture_getResultCloudAnchorState(sessionHandle,
@@ -125,6 +142,12 @@ namespace Google.XR.ARCoreExtensions.Internal
 
         public static IntPtr GetCloudAnchorHandle(IntPtr sessionHandle, IntPtr futureHandle)
         {
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                return futureHandle;
+            }
+            #endif
+            
             IntPtr outAnchorHandle = IntPtr.Zero;
 #if !UNITY_IOS || CLOUDANCHOR_IOS_SUPPORT
             ExternApi.ArResolveCloudAnchorFuture_acquireResultAnchor(sessionHandle,
@@ -136,6 +159,12 @@ namespace Google.XR.ARCoreExtensions.Internal
         public static CloudAnchorState GetHostCloudAnchorState(IntPtr sessionHandle,
             IntPtr futureHandle)
         {
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                return ARCoreCloudAnchorsEditorDelegate.Instance.GetCloudAnchorState(sessionHandle, futureHandle);
+            }
+            #endif
+            
             ApiCloudAnchorState outApiCloudAnchorState = ApiCloudAnchorState.None;
 #if !UNITY_IOS || CLOUDANCHOR_IOS_SUPPORT
             ExternApi.ArHostCloudAnchorFuture_getResultCloudAnchorState(sessionHandle,
@@ -146,6 +175,12 @@ namespace Google.XR.ARCoreExtensions.Internal
 
         public static string GetCloudAnchorId(IntPtr sessionHandle, IntPtr futureHandle)
         {
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                return ARCoreCloudAnchorsEditorDelegate.Instance.GetCloudAnchorId(sessionHandle, futureHandle);
+            }
+            #endif
+            
 #if !UNITY_IOS || CLOUDANCHOR_IOS_SUPPORT
             IntPtr stringHandle = IntPtr.Zero;
             ExternApi.ArHostCloudAnchorFuture_acquireResultCloudAnchorId(
@@ -162,12 +197,24 @@ namespace Google.XR.ARCoreExtensions.Internal
 
         public static void Cancel(IntPtr sessionHandle, IntPtr futureHandle)
         {
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                return;
+            }
+            #endif
+            
             int defaultInt = 0;
             ExternApi.ArFuture_cancel(sessionHandle, futureHandle, ref defaultInt);
         }
 
         public static void Release(IntPtr futureHandle)
         {
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                return;
+            }
+            #endif
+            
             ExternApi.ArFuture_release(futureHandle);
             futureHandle = IntPtr.Zero;
         }

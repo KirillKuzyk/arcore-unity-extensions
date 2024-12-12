@@ -275,6 +275,23 @@ namespace Google.XR.ARCoreExtensions.Samples.PersistentCloudAnchors
         /// </summary>
         public void Awake()
         {
+            #if ARCORE_USE_ARF_5
+            if (Origin == null) {
+                Debug.LogError("AR Foundation Remote: 'Origin' reference is not populated in Inspector, fixing...");
+                Origin = FindObjectOfType<XROrigin>(true);
+                UnityEngine.Assertions.Assert.IsNotNull(Origin, nameof(Origin));
+            }
+            if (Extensions.Origin == null) {
+                Debug.LogError("AR Foundation Remote: 'Extensions.Origin' reference is not populated in Inspector, fixing...");
+                Extensions.Origin = Origin;
+            }
+            #else
+            if (SessionOrigin.camera.GetComponentInChildren<ARPoseDriver>() == null) {
+                Debug.LogError("AR Foundation Remote: 'ARPoseDriver' is not present on ARCamera object, so camera tracking will not work. Fixing...");
+                SessionOrigin.camera.gameObject.AddComponent<ARPoseDriver>();
+            }
+            #endif
+
             // Lock screen to portrait.
             Screen.autorotateToLandscapeLeft = false;
             Screen.autorotateToLandscapeRight = false;

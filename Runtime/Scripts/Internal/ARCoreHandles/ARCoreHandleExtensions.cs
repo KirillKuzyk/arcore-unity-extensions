@@ -35,6 +35,12 @@ namespace Google.XR.ARCoreExtensions.Internal
                 return IntPtr.Zero;
             }
 
+            #if UNITY_EDITOR
+            if (UnityEngine.Application.isEditor) {
+                return ARCoreCloudAnchorsEditorDelegate.dummySessionPtr;
+            }
+            #endif
+            
             SessionNativePointerStruct info = (SessionNativePointerStruct)
                 Marshal.PtrToStructure(
                     session.subsystem.nativePtr,
@@ -45,6 +51,12 @@ namespace Google.XR.ARCoreExtensions.Internal
 
         public static IntPtr AnchorHandle(this ARAnchor anchor)
         {
+            #if UNITY_EDITOR
+            if (UnityEngine.Application.isEditor) {
+                return anchor.nativePtr;
+            }
+            #endif
+            
             AnchorNativePointerStruct info = (AnchorNativePointerStruct)
                 Marshal.PtrToStructure(
                     anchor.nativePtr,
@@ -65,6 +77,12 @@ namespace Google.XR.ARCoreExtensions.Internal
 
         public static IntPtr FrameHandle(this XRCameraFrame frame)
         {
+            #if UNITY_EDITOR
+            if (UnityEngine.Application.isEditor) {
+                return ARCoreCloudAnchorsEditorDelegate.dummyFramePtr;
+            }
+            #endif
+            
             FrameNativePointerStruct info = (FrameNativePointerStruct)
                 Marshal.PtrToStructure(
                     frame.nativePtr,

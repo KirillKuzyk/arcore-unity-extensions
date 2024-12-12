@@ -18,6 +18,8 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
+using UnityEngine.Assertions;
+
 namespace Google.XR.ARCoreExtensions.Internal
 {
     using System;
@@ -55,6 +57,12 @@ namespace Google.XR.ARCoreExtensions.Internal
 
         public static IntPtr HostCloudAnchor(IntPtr sessionHandle, IntPtr anchorHandle)
         {
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                return ARCoreCloudAnchorsEditorDelegate.Instance.HostCloudAnchor(sessionHandle, anchorHandle, null);
+            }
+            #endif
+            
             IntPtr cloudAnchorHandle = IntPtr.Zero;
 #if !UNITY_IOS || CLOUDANCHOR_IOS_SUPPORT
             ApiArStatus status = ExternApi.ArSession_hostAndAcquireNewCloudAnchor(
@@ -71,6 +79,12 @@ namespace Google.XR.ARCoreExtensions.Internal
 
         public static IntPtr HostCloudAnchor(IntPtr sessionHandle, IntPtr anchorHandle, int ttlDays)
         {
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                return ARCoreCloudAnchorsEditorDelegate.Instance.HostCloudAnchor(sessionHandle, anchorHandle, ttlDays);
+            }
+            #endif
+
             IntPtr cloudAnchorHandle = IntPtr.Zero;
 #if !UNITY_IOS || CLOUDANCHOR_IOS_SUPPORT
             ApiArStatus status = ExternApi.ArSession_hostAndAcquireNewCloudAnchorWithTtl(
@@ -87,6 +101,16 @@ namespace Google.XR.ARCoreExtensions.Internal
         public static IntPtr HostCloudAnchorAsync(
             IntPtr sessionHandle, IntPtr anchorHandle, int ttlDays)
         {
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                var _futureHandle = ARCoreCloudAnchorsEditorDelegate.Instance.HostCloudAnchor(sessionHandle, anchorHandle, ttlDays);
+                if (_futureHandle != IntPtr.Zero) {
+                    Assert.AreEqual(PromiseState.Pending, FutureApi.GetState(sessionHandle, _futureHandle));
+                }
+                return _futureHandle;
+            }
+            #endif
+            
             IntPtr futureHandle = IntPtr.Zero;
 #if !UNITY_IOS || CLOUDANCHOR_IOS_SUPPORT
             ApiArStatus status = ExternApi.ArSession_hostCloudAnchorAsync(
@@ -105,6 +129,14 @@ namespace Google.XR.ARCoreExtensions.Internal
         public static void SetAuthToken(IntPtr sessionHandle, string authToken)
         {
             _latestAuthToken = authToken;
+            
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                ARCoreCloudAnchorsEditorDelegate.Instance.SetAuthToken(sessionHandle, authToken);
+                return;
+            }
+            #endif
+
 #if UNITY_IOS && ARCORE_EXTENSIONS_IOS_SUPPORT
             ExternApi.ArSession_setAuthToken(sessionHandle, authToken);
 #endif
@@ -117,6 +149,13 @@ namespace Google.XR.ARCoreExtensions.Internal
                 return;
             }
 
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                ARCoreCloudAnchorsEditorDelegate.Instance.SetAuthToken(sessionHandle, _latestAuthToken);
+                return;
+            }
+            #endif
+            
 #if UNITY_IOS && ARCORE_EXTENSIONS_IOS_SUPPORT
             ExternApi.ArSession_setAuthToken(sessionHandle, _latestAuthToken);
 #endif
@@ -124,6 +163,12 @@ namespace Google.XR.ARCoreExtensions.Internal
 
         public static IntPtr ResolveCloudAnchor(IntPtr sessionHandle, string cloudAnchorId)
         {
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                return ARCoreCloudAnchorsEditorDelegate.Instance.ResolveCloudAnchor(sessionHandle, cloudAnchorId);
+            }
+            #endif
+            
             IntPtr cloudAnchorHandle = IntPtr.Zero;
 #if !UNITY_IOS || CLOUDANCHOR_IOS_SUPPORT
             ApiArStatus status = ExternApi.ArSession_resolveAndAcquireNewCloudAnchor(
@@ -138,8 +183,35 @@ namespace Google.XR.ARCoreExtensions.Internal
             return cloudAnchorHandle;
         }
 
+        #if UNITY_EDITOR
+        /// Future (promise) handles and cloud anchor handles
+        internal static readonly HashSet<IntPtr> editorHandles = new HashSet<IntPtr>(); // static field is bad, but works
+
+        internal static void addEditorHandle(IntPtr handle) {
+            Assert.AreNotEqual(IntPtr.Zero, handle);
+            var added = editorHandles.Add(handle);
+            Assert.IsTrue(added);
+        }
+
+        internal static void removeEditorHandle(IntPtr handle) {
+            Assert.AreNotEqual(IntPtr.Zero, handle);
+            var removed = editorHandles.Remove(handle);
+            Assert.IsTrue(removed);
+        }
+        #endif
+
         public static IntPtr ResolveCloudAnchorAsync(IntPtr sessionHandle, string cloudAnchorId)
         {
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                var _futureHandle = ARCoreCloudAnchorsEditorDelegate.Instance.ResolveCloudAnchor(sessionHandle, cloudAnchorId);
+                if (_futureHandle != IntPtr.Zero) {
+                    Assert.AreEqual(PromiseState.Pending, FutureApi.GetState(sessionHandle, _futureHandle));
+                }
+                return _futureHandle;
+            }
+            #endif
+            
             IntPtr futureHandle = IntPtr.Zero;
 #if !UNITY_IOS || CLOUDANCHOR_IOS_SUPPORT
             ApiArStatus status = ExternApi.ArSession_resolveCloudAnchorAsync(
@@ -156,6 +228,12 @@ namespace Google.XR.ARCoreExtensions.Internal
         public static FeatureMapQuality EstimateFeatureMapQualityForHosting(
             IntPtr sessionHandle, Pose pose)
         {
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                return ARCoreCloudAnchorsEditorDelegate.Instance.EstimateFeatureMapQualityForHosting(sessionHandle, pose);
+            }
+            #endif
+            
             int featureMapQuality = (int)FeatureMapQuality.Insufficient;
 #if !UNITY_IOS || CLOUDANCHOR_IOS_SUPPORT
             IntPtr poseHandle = PoseApi.Create(sessionHandle, pose);

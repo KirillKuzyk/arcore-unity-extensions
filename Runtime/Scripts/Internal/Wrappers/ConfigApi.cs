@@ -58,6 +58,11 @@ namespace Google.XR.ARCoreExtensions.Internal
     {
         public static void ConfigureSession(IntPtr sessionHandle, ARCoreExtensionsConfig config)
         {
+            #if UNITY_EDITOR
+            if (Application.isEditor) {
+                return;
+            }
+            #endif
             IntPtr configHandle = IntPtr.Zero;
             ExternApi.ArConfig_create(sessionHandle, ref configHandle);
             UpdateSessionConfig(sessionHandle, configHandle, config);
